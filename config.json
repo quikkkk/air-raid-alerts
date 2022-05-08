@@ -1,0 +1,6 @@
+{
+ "api": "https://emapa.fra1.cdn.digitaloceanspaces.com/statuses.json",
+ "state": "Хмельницька область",
+ "checkIntervalInMilliseconds": 15000,
+ "notificationRepeatTimes": 3
+}
