@@ -1,27 +1,34 @@
+require('dotenv').config()
+
+const TelegramBot = require('node-telegram-bot-api')
 const getStateRaidAlertsStatus = require('./utils/getStateRaidAlertStatus')
-const getAlertStatusChange = require('./utils/getAlertStatusChange')
 const wait = require('./utils/wait')
 const config = require('./config.json')
+const bot = new TelegramBot(process.env.BOT_APIKEY, { polling: true })
 
-async function Main () {
- let isAlertActive = false
+class Main {
+ constructor (isAlertActive) {
+  this.isAlertActive = isAlertActive
+ }
 
- while (true) {
-  try {
-   const alertStatus = await getStateRaidAlertsStatus()
-   const alertStatusChange = getAlertStatusChange(isAlertActive, alertStatus)
+ async checkAirRaid () {
+  while (true) {
+   try {
+    const alertStatus = await getStateRaidAlertsStatus()
+    const id = -1001540342685
 
-   if (alertStatusChange === alertStatusChange.Started)
-    console.log('Started')
-   else if (alertStatusChange === alertStatusChange.Finished)
-    console.log('Finished')
+    this.isAlertActive = alertStatus.enabled
+    
+    if (this.isAlertActive)
+     bot.sendMessage(id, '❗❗ Хмельницка область зараз у небезпеці', { parse_mode: 'Markdown' })
 
-   isAlertActive = alertStatus.enabled
-   await wait(config.checkIntervalInMilliseconds)
-  } catch (e) {
-   throw e
+    bot.sendMessage(id, '💛💙 Схоже, Хмельницька область зараз у безпеці', { parse_mode: 'Markdown' })
+    await wait(config.checkIntervalInMilliseconds)
+   } catch (e) {
+    throw e
+   }
   }
  }
 }
 
-Main()
+module.exports = new Main().checkAirRaid()

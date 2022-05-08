@@ -5,7 +5,7 @@ module.exports = async function getStateRaidAlertsStatus() {
  const results = await axios.get(config.api).then(res => res.data)
  const stateStatus = results.states[config.state]
 
- console.log(`Дата: ${new Date().toLocaleDateString()}, Область: ${config.state}, Тривога: ${stateStatus.enabled === false ? 'Нема' : 'Тривога'}`)
+ console.log(`Дата: ${new Date().toLocaleString()}, Область: ${config.state}, Тривога: ${stateStatus.enabled === true ? 'Тривога' : 'Нема'}`)
 
  return stateStatus
 }
